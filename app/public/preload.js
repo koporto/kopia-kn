@@ -10,3 +10,12 @@ contextBridge.exposeInMainWorld("kopiaUI", {
     ipcRenderer.invoke("browse-dir", path);
   },
 });
+
+contextBridge.exposeInMainWorld("knockoutUI", {
+  setup: function (payload) {
+    return ipcRenderer.invoke("knockout-setup", payload);
+  },
+  destinationStatus: function () {
+    return ipcRenderer.invoke("knockout-destination-status");
+  },
+});

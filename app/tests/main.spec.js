@@ -20,10 +20,10 @@ function getKopiaUIDir() {
       return path.resolve("../dist/kopia-ui/mac-arm64");
     case "linux/x64":
       // on Linux we must run from installed location due to AppArmor profile
-      return path.resolve("/opt/KopiaUI");
+      return path.resolve("/opt/Knockout Backup");
     case "linux/arm64":
       // on Linux we must run from installed location due to AppArmor profile
-      return path.resolve("/opt/KopiaUI");
+      return path.resolve("/opt/Knockout Backup");
     case "win32/x64":
       return path.resolve("../dist/kopia-ui/win-unpacked");
     default:
@@ -36,7 +36,7 @@ function getMainPath(kopiauiDir) {
     case "darwin":
       return path.join(
         kopiauiDir,
-        "KopiaUI.app",
+        "Knockout Backup.app",
         "Contents",
         "Resources",
         "app.asar",
@@ -57,17 +57,17 @@ function getMainPath(kopiauiDir) {
 function getExecutablePath(kopiauiDir) {
   switch (process.platform) {
     case "win32":
-      return path.join(kopiauiDir, "KopiaUI.exe");
+      return path.join(kopiauiDir, "Knockout Backup.exe");
     case "darwin":
       return path.join(
         kopiauiDir,
-        "KopiaUI.app",
+        "Knockout Backup.app",
         "Contents",
         "MacOS",
-        "KopiaUI",
+        "Knockout Backup",
       );
     default:
-      return path.join(kopiauiDir, "kopia-ui");
+      return path.join(kopiauiDir, "knockout-backup");
   }
 }
 
@@ -168,7 +168,7 @@ test("opens repository window on first start", async () => {
     waitUntil: "networkidle",
     networkIdleTimeout: 1000,
   });
-  expect(await page.title()).toMatch(/KopiaUI v\d+/);
+  expect(await page.title()).toMatch(/Knockout Backup/);
 
   // TODO - we can exercise some UI scenario using 'page'
 

@@ -4,7 +4,7 @@ import log from "electron-log";
 import AutoLaunch from "auto-launch";
 
 const autoLauncher = new AutoLaunch({
-  name: "Kopia",
+  name: "Knockout Backup",
   mac: {
     useLaunchAgent: true,
   },
