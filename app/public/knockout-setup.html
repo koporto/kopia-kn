@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Knockout Backup — Enroll this computer</title>
+    <style>
+      :root {
+        --navy: #0b1f3a;
+        --navy-2: #12284a;
+        --gold: #c9a227;
+        --gold-2: #e0be4f;
+        --paper: #f6f3ea;
+        --ink: #1a1a1a;
+        --muted: #5c6570;
+        --line: #d7d0c3;
+        --danger: #9b2c2c;
+        --ok: #1f6b3a;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; }
+      body {
+        font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+        background: linear-gradient(160deg, var(--navy) 0%, #081528 55%, #1a1408 100%);
+        color: var(--ink);
+      }
+      .wrap {
+        min-height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 32px 16px;
+      }
+      .card {
+        width: min(720px, 100%);
+        background: var(--paper);
+        border-radius: 16px;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+        overflow: hidden;
+      }
+      header {
+        background: var(--navy-2);
+        color: #fff;
+        padding: 28px 32px 24px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .mark {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        background: var(--gold);
+        color: var(--navy);
+        display: grid;
+        place-items: center;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+      }
+      h1 { margin: 0; font-size: 22px; font-weight: 650; }
+      .sub { margin: 6px 0 0; color: #d8c48a; font-size: 13px; }
+      form, .done { padding: 28px 32px 32px; }
+      label { display: block; font-size: 13px; font-weight: 650; margin: 16px 0 6px; }
+      input[type="text"], input[type="password"] {
+        width: 100%;
+        padding: 11px 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        font-size: 15px;
+        background: #fff;
+      }
+      .hint { color: var(--muted); font-size: 12px; margin-top: 4px; }
+      .profiles {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .profiles label {
+        margin: 0;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      .profiles label.selected { border-color: var(--gold); box-shadow: inset 0 0 0 1px var(--gold); }
+      .profiles strong { display: block; font-size: 13px; }
+      .profiles span { display: block; color: var(--muted); font-size: 12px; margin-top: 4px; font-weight: 400; }
+      .actions { margin-top: 24px; display: flex; gap: 12px; align-items: center; }
+      button {
+        background: var(--navy);
+        color: #fff;
+        border: 0;
+        border-radius: 8px;
+        padding: 11px 18px;
+        font-size: 14px;
+        font-weight: 650;
+        cursor: pointer;
+      }
+      button:disabled { opacity: 0.55; cursor: default; }
+      .status { font-size: 13px; color: var(--muted); }
+      .status.err { color: var(--danger); }
+      .status.ok { color: var(--ok); }
+      footer {
+        padding: 0 32px 22px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      footer a { color: var(--navy); }
+      @media (max-width: 640px) {
+        .profiles { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="card">
+        <header>
+          <div class="brand">
+            <div class="mark">KN</div>
+            <div>
+              <h1>Knockout Backup</h1>
+              <p class="sub">Managed backup from Knockout Networks</p>
+            </div>
+          </div>
+        </header>
+        <form id="enroll">
+          <p style="margin:0;color:var(--muted);font-size:14px">
+            Enter the site ID and passcode for this client. Backup starts tonight with sensible Windows defaults.
+          </p>
+          <label for="siteId">Site ID</label>
+          <input id="siteId" name="siteId" type="text" autocomplete="off" required minlength="2" maxlength="64" placeholder="acme-hq" />
+          <div class="hint">Becomes the storage subdirectory, for example <code>sites/acme-hq/</code>.</div>
+          <label for="passcode">Passcode</label>
+          <input id="passcode" name="passcode" type="password" required minlength="8" placeholder="At least 8 characters" />
+          <div class="hint">Used as the repository password. Same site ID and passcode reconnect another computer to the same vault.</div>
+          <label>Backup profile</label>
+          <div class="profiles" id="profiles">
+            <label class="selected"><input type="radio" name="profile" value="workstation" checked /><strong>Windows workstation</strong><span>Documents, Desktop, Pictures, and other user folders. Nightly at 2:00 AM.</span></label>
+            <label><input type="radio" name="profile" value="workstation-full" /><strong>Workstation (full profile)</strong><span>Entire user profile minus caches. Nightly at 2:00 AM.</span></label>
+            <label><input type="radio" name="profile" value="server" /><strong>Windows server</strong><span>Data volumes, shares, and IIS roots. Nightly at 1:30 AM with VSS.</span></label>
+            <label><input type="radio" name="profile" value="server-system" /><strong>Server (system + data)</strong><span>C: plus data drives, excluding Windows junk. Nightly at 1:30 AM.</span></label>
+          </div>
+          <div class="actions">
+            <button type="submit" id="go">Start nightly backups</button>
+            <div class="status" id="status"></div>
+          </div>
+        </form>
+        <div class="done" id="done" hidden>
+          <p class="status ok">This computer is enrolled. Nightly backups will run while Knockout Backup is running.</p>
+          <p id="summary"></p>
+        </div>
+        <footer>
+          Questions? <a href="https://knockout-networks.com">knockout-networks.com</a>
+          · hello@knockout-networks.com · (703) 493-0536
+        </footer>
+      </div>
+    </div>
+    <script>
+      const form = document.getElementById("enroll");
+      const status = document.getElementById("status");
+      const go = document.getElementById("go");
+      document.querySelectorAll("#profiles label").forEach((lab) => {
+        lab.addEventListener("click", () => {
+          document.querySelectorAll("#profiles label").forEach((x) => x.classList.remove("selected"));
+          lab.classList.add("selected");
+        });
+      });
+      form.addEventListener("submit", async (ev) => {
+        ev.preventDefault();
+        const payload = {
+          siteId: document.getElementById("siteId").value.trim(),
+          passcode: document.getElementById("passcode").value,
+          profile: form.profile.value,
+        };
+        status.className = "status";
+        status.textContent = "Enrolling this computer…";
+        go.disabled = true;
+        try {
+          if (window.knockoutUI && window.knockoutUI.setup) {
+            const result = await window.knockoutUI.setup(payload);
+            if (!result || result.error) {
+              throw new Error((result && result.error) || "Enrollment failed");
+            }
+            document.getElementById("summary").textContent =
+              "Site " + result.siteID + " · profile " + result.profile + " · " + (result.sources || []).length + " sources";
+            form.hidden = true;
+            document.getElementById("done").hidden = false;
+          } else {
+            status.textContent =
+              "CLI: kopia knockout setup --site-id " + payload.siteId + " --profile " + payload.profile;
+          }
+        } catch (err) {
+          status.className = "status err";
+          status.textContent = err.message || String(err);
+        } finally {
+          go.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>

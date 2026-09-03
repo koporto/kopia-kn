@@ -48,6 +48,7 @@ function newServerForRepo(repoID) {
         "--kopiaui-notifications", // will print notification JSON to stderr
         "--shutdown-on-stdin", // shutdown the server when parent dies
         "--address=127.0.0.1:0",
+        "--ui-title-prefix=Knockout Backup",
       );
 
       args.push("--config-file", path.resolve(configDir(), repoID + ".config"));

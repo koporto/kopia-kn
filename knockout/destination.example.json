@@ -1,0 +1,10 @@
+{
+  "type": "s3",
+  "bucket": "kn-client-backups",
+  "endpoint": "s3.us-east-1.amazonaws.com",
+  "region": "us-east-1",
+  "accessKeyID": "REPLACE_WITH_ACCESS_KEY",
+  "secretAccessKey": "REPLACE_WITH_SECRET_KEY",
+  "prefixBase": "sites/",
+  "enrollmentPasscodeSHA256": ""
+}

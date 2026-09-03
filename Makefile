@@ -1,4 +1,4 @@
-COVERAGE_PACKAGES=./repo/...,./fs/...,./snapshot/...,./cli/...,./internal/...,./notification/...
+COVERAGE_PACKAGES=./repo/...,./fs/...,./snapshot/...,./cli/...,./internal/...,./notification/...,./knockout/...
 TEST_FLAGS?=
 KOPIA_INTEGRATION_EXE=$(CURDIR)/dist/testing_$(GOOS)_$(GOARCH)/kopia.exe
 TESTING_ACTION_EXE=$(CURDIR)/dist/testing_$(GOOS)_$(GOARCH)/testingaction.exe
@@ -7,7 +7,7 @@ REPEAT_TEST=1
 
 # get a list all go files
 rwildcard=$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
-go_source_dirs=cli fs internal repo snapshot
+go_source_dirs=cli fs internal repo snapshot knockout
 all_go_sources=$(foreach d,$(go_source_dirs),$(call rwildcard,$d/,*.go)) $(wildcard *.go)
 
 all:

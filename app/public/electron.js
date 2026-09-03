@@ -33,6 +33,11 @@ import {
   isFirstRun,
   isPortableConfig,
 } from "./config.js";
+import {
+  registerKnockoutIPC,
+  showKnockoutSetupWindow,
+  isKnockoutEnrolled,
+} from "./knockout-main.js";
 
 import Store from "electron-store";
 import log from "electron-log";
@@ -42,7 +47,7 @@ import crypto from "crypto";
 // Store to save parameters
 const store = new Store();
 
-app.name = "KopiaUI";
+app.name = "Knockout Backup";
 
 let tray = null;
 let repositoryWindows = {};
@@ -98,7 +103,7 @@ function showRepoWindow(repositoryID) {
   }
 
   let windowOptions = {
-    title: "KopiaUI is Loading...",
+    title: "Knockout Backup is Loading...",
     // default width
     width: 1000,
     // default height
@@ -302,7 +307,7 @@ autoUpdater.on("update-available", (a) => {
       .showMessageBox({
         buttons: ["Yes", "No"],
         message:
-          "An updated KopiaUI v" +
+          "An updated Knockout Backup v" +
           a.version +
           " is available.\n\nDo you want to install it now?",
       })
@@ -318,7 +323,7 @@ autoUpdater.on("update-available", (a) => {
     lastNotifiedVersion = a.version;
 
     const notification = new Notification({
-      title: "New version of KopiaUI",
+      title: "New version of Knockout Backup",
       body:
         "Version v" +
         a.version +
@@ -511,7 +516,8 @@ app.on("ready", () => {
     ),
   );
 
-  tray.setToolTip("Kopia");
+  tray.setToolTip("Knockout Backup");
+  registerKnockoutIPC();
 
   // hooks exposed to tests
   if (process.env["KOPIA_UI_TESTING"]) {
@@ -532,18 +538,27 @@ app.on("ready", () => {
 
   allConfigs().forEach((repoID) => serverForRepo(repoID).actuateServer());
 
-  if (isFirstRun()) {
-    // open all repo windows on first run.
-    showAllRepoWindows();
-
-    // on Windows, also show the notification.
-    if (process.platform === "win32") {
-      tray.displayBalloon({
-        title: "Kopia is running in the background",
-        content: "Click on the system tray icon to open the menu",
-      });
+  const startUI = async () => {
+    if (isFirstRun() && !isKnockoutEnrolled()) {
+      const enrolled = await showKnockoutSetupWindow();
+      if (enrolled) {
+        allConfigs().forEach((repoID) => serverForRepo(repoID).actuateServer());
+      }
     }
-  }
+
+    if (isFirstRun() || isKnockoutEnrolled()) {
+      showAllRepoWindows();
+
+      if (process.platform === "win32" && isFirstRun()) {
+        tray.displayBalloon({
+          title: "Knockout Backup is running in the background",
+          content: "Click the system tray icon to open the menu",
+        });
+      }
+    }
+  };
+
+  startUI();
 
   if (isOutsideOfApplicationsFolderOnMac()) {
     setTimeout(maybeMoveToApplicationsFolder, 1000);
@@ -668,7 +683,7 @@ function updateTrayContextMenu() {
     }
   } else {
     autoUpdateMenuItems.push({
-      label: "KopiaUI is up-to-date: " + app.getVersion(),
+      label: "Knockout Backup is up-to-date: " + app.getVersion(),
       enabled: false,
     });
   }

@@ -1,6 +1,8 @@
 Kopia
 =====
 
+This repository (`kopia-kn`) is the Knockout Networks edition of Kopia. Technician enrollment, branded Windows installer, and nightly MSP defaults are documented in [docs/KNOCKOUT.md](docs/KNOCKOUT.md).
+
 ![Kopia](icons/kopia.svg)
 [![Build Status](https://github.com/kopia/kopia/workflows/Build/badge.svg)](https://github.com/kopia/kopia/actions?query=workflow%3ABuild)
 [![GoDoc](https://godoc.org/github.com/kopia/kopia/repo?status.svg)](https://godoc.org/github.com/kopia/kopia/repo)

@@ -1,7 +1,7 @@
 {
-  "name": "kopia-ui",
+  "name": "knockout-backup",
   "version": "1.0.0",
-  "repository": "github:kopia/kopia",
+  "repository": "github:koporto/kopia-kn",
   "dependencies": {
     "auto-launch": "^5.0.6",
     "electron-log": "^5.4.4",
@@ -13,12 +13,12 @@
   },
   "type": "module",
   "author": {
-    "email": "kopia-pmc@googlegroups.com",
-    "name": "Kopia Authors"
+    "email": "hello@knockout-networks.com",
+    "name": "Knockout Networks"
   },
   "build": {
-    "productName": "KopiaUI",
-    "appId": "io.kopia.ui",
+    "productName": "Knockout Backup",
+    "appId": "com.knockoutnetworks.backup",
     "publish": [
       {
         "provider": "github",
@@ -36,6 +36,14 @@
         "to": "."
       },
       {
+        "from": "public/knockout-setup.html",
+        "to": "knockout-setup.html"
+      },
+      {
+        "from": "resources/knockout-destination.json",
+        "to": "knockout-destination.json"
+      },
+      {
         "from": "resources/${os}",
         "to": ".",
         "filter": [
@@ -49,7 +57,8 @@
     },
     "nsis": {
       "oneClick": false,
-      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "artifactName": "KnockoutBackup-Setup-${version}.${ext}",
+      "shortcutName": "Knockout Backup",
       "perMachine": false
     },
     "snap": {
@@ -134,7 +143,7 @@
     "prettier": "^3.9.6"
   },
   "homepage": "./",
-  "description": "Fast and secure open source backup.",
+  "description": "Managed backup for Knockout Networks clients.",
   "license": "Apache-2.0",
   "main": "public/electron.js",
   "scripts": {
